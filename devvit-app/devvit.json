@@ -20,10 +20,23 @@
     "items": [
       {
         "label": "Create a new post",
-        "description": "devvit-trpc",
+        "description": "post from here",
         "location": "subreddit",
         "forUserType": "moderator",
         "endpoint": "/internal/menu/post-create"
+      },
+      {
+        "label": "Hello menu",
+        "description": "show hello menu",
+        "location": "post",
+        "endpoint": "/internal/menu/hello-menu"
+      },
+      {
+        "label": "Admin menu",
+        "description": "show admin menu",
+        "location": "post",
+        "endpoint": "/internal/menu/admin-menu",
+        "forUserType": "moderator"
       }
     ]
   },
@@ -35,5 +48,8 @@
   },
   "permissions": {
     "reddit": true
+  },
+  "forms": {
+    "adminForm": "/internal/form/admin-form"
   }
 }
