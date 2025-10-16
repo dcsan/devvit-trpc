@@ -31,6 +31,10 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
 
+    // Enhanced tRPC type inference support
+    "declaration": true,
+    "declarationMap": true,
+
     // Assume library types are checked and compatible.
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,

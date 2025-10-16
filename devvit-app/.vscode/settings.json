@@ -18,5 +18,37 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.exclude": {
     "**/.git": false
+  },
+  "projectColors.mainColor": "#170bf9",
+  "window.title": "devvit-app",
+  "workbench.colorCustomizations": {
+    "statusBarItem.warningBackground": "#170bf9",
+    "statusBarItem.warningForeground": "#ffffff",
+    "statusBarItem.warningHoverBackground": "#170bf9",
+    "statusBarItem.warningHoverForeground": "#ffffff90",
+    "statusBarItem.remoteHoverBackground": "#3125ff",
+    "statusBarItem.remoteHoverForeground": "#ffffff90",
+    "statusBar.noFolderBackground": "#170bf9",
+    "statusBar.noFolderForeground": "#ffffff",
+    "statusBar.noFolderBorder": "#170bf9",
+    "statusBar.prominentBackground": "#170bf9",
+    "statusBar.prominentForeground": "#ffffff",
+    "statusBar.prominentHoverBackground": "#170bf9",
+    "statusBar.prominentHoverForeground": "#ffffff90",
+    "focusBorder": "#170bf999",
+    "progressBar.background": "#170bf9",
+    "textLink.foreground": "#574bff",
+    "textLink.activeForeground": "#6458ff",
+    "selection.background": "#0a00ec",
+    "list.highlightForeground": "#170bf9",
+    "list.focusAndSelectionOutline": "#170bf999",
+    "button.background": "#170bf9",
+    "button.foreground": "#ffffff",
+    "button.hoverBackground": "#2418ff",
+    "tab.activeBorderTop": "#2418ff",
+    "pickerGroup.foreground": "#2418ff",
+    "list.activeSelectionBackground": "#170bf94d",
+    "panelTitle.activeBorder": "#2418ff",
+    "activityBar.activeBorder": "#170bf9"
   }
 }

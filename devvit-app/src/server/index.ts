@@ -1,7 +1,13 @@
 import express from 'express';
-import { InitResponse, IncrementResponse, DecrementResponse } from '../shared/types/api';
-import { redis, reddit, createServer, context, getServerPort } from '@devvit/web/server';
+import { createServer, context, getServerPort } from '@devvit/web/server';
 import { createPost } from './core/post';
+
+import * as trpcExpress from '@trpc/server/adapters/express';
+import { appRouter, type AppRouter } from './trpc/router';
+import { createTRPCContext } from './trpc/context';
+
+// Export the router type for client inference
+export type { AppRouter };
 
 const app = express();
 
@@ -14,93 +20,19 @@ app.use(express.text());
 
 const router = express.Router();
 
-router.get<{ postId: string }, InitResponse | { status: string; message: string }>(
-  '/api/init',
-  async (_req, res): Promise<void> => {
-    const { postId } = context;
-
-    if (!postId) {
-      console.error('API Init Error: postId not found in devvit context');
-      res.status(400).json({
-        status: 'error',
-        message: 'postId is required but missing from context',
-      });
-      return;
-    }
-
-    try {
-      const [count, username] = await Promise.all([
-        redis.get('count'),
-        reddit.getCurrentUsername(),
-      ]);
-
-      res.json({
-        type: 'init',
-        postId: postId,
-        count: count ? parseInt(count) : 0,
-        username: username ?? 'anonymous',
-      });
-    } catch (error) {
-      console.error(`API Init Error for post ${postId}:`, error);
-      let errorMessage = 'Unknown error during initialization';
-      if (error instanceof Error) {
-        errorMessage = `Initialization failed: ${error.message}`;
-      }
-      res.status(400).json({ status: 'error', message: errorMessage });
-    }
-  }
-);
-
-router.post<{ postId: string }, IncrementResponse | { status: string; message: string }, unknown>(
-  '/api/increment',
-  async (_req, res): Promise<void> => {
-    const { postId } = context;
-    if (!postId) {
-      res.status(400).json({
-        status: 'error',
-        message: 'postId is required',
-      });
-      return;
-    }
-
-    res.json({
-      count: await redis.incrBy('count', 1),
-      postId,
-      type: 'increment',
-    });
-  }
-);
-
-router.post<{ postId: string }, DecrementResponse | { status: string; message: string }, unknown>(
-  '/api/decrement',
-  async (_req, res): Promise<void> => {
-    const { postId } = context;
-    if (!postId) {
-      res.status(400).json({
-        status: 'error',
-        message: 'postId is required',
-      });
-      return;
-    }
-
-    res.json({
-      count: await redis.incrBy('count', -1),
-      postId,
-      type: 'decrement',
-    });
-  }
-);
-
 router.post('/internal/on-app-install', async (_req, res): Promise<void> => {
+  console.log('🚀 App installed! Creating initial post...');
+  console.log(`Subreddit: ${context.subredditName}`);
   try {
     const post = await createPost();
 
+    console.log(`✅ Installation complete! Post created with id: ${post.id}`);
     res.json({
       status: 'success',
       message: `Post created in subreddit ${context.subredditName} with id ${post.id}`,
     });
   } catch (error) {
-    console.error(`Error creating post: ${error}`);
+    console.error(`❌ Error creating post during installation: ${error}`);
     res.status(400).json({
       status: 'error',
       message: 'Failed to create post',
@@ -124,12 +56,45 @@ router.post('/internal/menu/post-create', async (_req, res): Promise<void> => {
   }
 });
 
-// Use router middleware
+// tRPC middleware - handles /api/trpc requests
+// IMPORTANT: Devvit requires all client-side API endpoints to end with /api
+app.use(
+  '/api/trpc',
+  (req, res, next) => {
+    // CORS headers
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+      return;
+    }
+
+    // Debug logging
+    console.log(`tRPC Request: ${req.method} ${req.url}`);
+    next();
+  },
+  trpcExpress.createExpressMiddleware({
+    router: appRouter,
+    createContext: createTRPCContext,
+    onError: ({ path, error }) => {
+      console.error(`tRPC Error on ${path}:`, error);
+    },
+  })
+);
+
+// Use router middleware for internal Devvit routes
 app.use(router);
 
 // Get port from environment variable with fallback
 const port = getServerPort();
 
+console.log('🚀 Devvit tRPC server initializing...');
+console.log(`🔗 tRPC endpoint will be available at /api/trpc`);
+
 const server = createServer(app);
 server.on('error', (err) => console.error(`server error; ${err.stack}`));
 server.listen(port);
+
+console.log(`📡 Server listening on port ${port}`);

@@ -1,0 +1,42 @@
+# https://github.com/casey/just
+# use env vars like: $BASE_DOMAIN
+# use params like {{param}}
+# set variables like  var:="value" or var := True
+
+# load .env file
+set dotenv-load
+
+
+# causes all just variables to be exported
+set export
+
+default:
+  @just --list
+
+cls:
+  clear && printf '\e[3J'
+
+dev:
+  npm run dev
+
+deploy:
+  npm run deploy
+
+check:
+  npm run check
+
+lint:
+  npm run lint
+
+lint-fix:
+  npm run lint-fix
+
+prettier:
+  npm run prettier
+
+type-check:
+  npm run type-check
+
+build:
+  npm run build
+

@@ -10,7 +10,13 @@
 
     "outDir": "../../dist/types/server",
 
-    "tsBuildInfoFile": "../../dist/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "../../dist/tsconfig.tsbuildinfo",
+
+    // Enhanced tRPC type export support
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    }
   },
   // https://github.com/Microsoft/TypeScript/issues/25636
   "include": ["**/*", "**/*.json", "../../package.json"],
