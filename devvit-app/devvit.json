@@ -32,5 +32,8 @@
   },
   "dev": {
     "subreddit": "devvit_trpc_dev"
+  },
+  "permissions": {
+    "reddit": true
   }
 }

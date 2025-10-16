@@ -17,12 +17,20 @@ export const AdminPage = ({ onBack }: AdminPageProps) => {
     enabled: false, // Don't auto-fetch on mount
   });
 
+  const { data: subData, refetch: doReadSub, isFetching: isReadingSub } = trpc.readSub.useQuery(undefined, {
+    enabled: false, // Don't auto-fetch on mount
+  });
+
   const handleResetCounter = () => {
     resetCounterMutation.mutate();
   };
 
   const handlePing = () => {
     void doPing();
+  };
+
+  const handleReadSub = () => {
+    void doReadSub();
   };
 
   return (
@@ -91,6 +99,28 @@ export const AdminPage = ({ onBack }: AdminPageProps) => {
               {pingData && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
                   <span className="text-green-700 font-medium">Response: {pingData.message}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={handleReadSub}
+                disabled={isReadingSub}
+                className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+              >
+                {isReadingSub ? 'Reading...' : 'Read Subreddit'}
+              </button>
+              {subData && (
+                <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  <h4 className="text-sm font-semibold text-purple-900 mb-2">Posts:</h4>
+                  <ul className="space-y-1">
+                    {subData.map((post, index) => (
+                      <li key={index} className="text-purple-700 text-sm">
+                        • {post}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>

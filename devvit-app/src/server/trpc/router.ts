@@ -97,6 +97,24 @@ export const appRouter = router({
     console.log('tRPC ping called');
     return { message: 'pong' };
   }),
+
+  readSub: publicProcedure.query(async ({ ctx }) => {
+    console.log('tRPC readSub called');
+    try {
+      const posts = await ctx.reddit.getTopPosts({
+        subredditName: 'popular',
+        timeframe: 'day',
+        limit: 10,
+      }).all();
+
+      const postTitles = posts.map(post => post.title);
+      console.log('tRPC readSub returning:', postTitles.length, 'posts');
+      return postTitles;
+    } catch (error) {
+      console.error('tRPC readSub error:', error);
+      throw new Error('Failed to fetch posts from r/popular');
+    }
+  }),
 });
 
 export type AppRouter = typeof appRouter;
