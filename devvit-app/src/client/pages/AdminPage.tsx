@@ -6,6 +6,7 @@ interface AdminPageProps {
 
 export const AdminPage = ({ onBack }: AdminPageProps) => {
   const { data: initialData, refetch } = trpc.getInitialData.useQuery();
+  console.log('AdminPage.initialData', { postId: initialData?.postId });
 
   const resetCounterMutation = trpc.resetCounter.useMutation({
     onSuccess: () => {
@@ -13,11 +14,19 @@ export const AdminPage = ({ onBack }: AdminPageProps) => {
     },
   });
 
-  const { data: pingData, refetch: doPing, isFetching: isPinging } = trpc.ping.useQuery(undefined, {
+  const {
+    data: pingData,
+    refetch: doPing,
+    isFetching: isPinging,
+  } = trpc.ping.useQuery(undefined, {
     enabled: false, // Don't auto-fetch on mount
   });
 
-  const { data: subData, refetch: doReadSub, isFetching: isReadingSub } = trpc.readSub.useQuery(undefined, {
+  const {
+    data: subData,
+    refetch: doReadSub,
+    isFetching: isReadingSub,
+  } = trpc.readSub.useQuery(undefined, {
     enabled: false, // Don't auto-fetch on mount
   });
 

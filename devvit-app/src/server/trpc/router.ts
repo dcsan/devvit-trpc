@@ -1,4 +1,4 @@
-import { router, publicProcedure, protectedProcedure } from './trpc';
+import { publicProcedure, router } from './trpc';
 
 export const appRouter = router({
   getInitialData: publicProcedure.query(async ({ ctx }) => {
@@ -101,13 +101,15 @@ export const appRouter = router({
   readSub: publicProcedure.query(async ({ ctx }) => {
     console.log('tRPC readSub called');
     try {
-      const posts = await ctx.reddit.getTopPosts({
-        subredditName: 'popular',
-        timeframe: 'day',
-        limit: 10,
-      }).all();
+      const posts = await ctx.reddit
+        .getTopPosts({
+          subredditName: 'popular',
+          timeframe: 'day',
+          limit: 10,
+        })
+        .all();
 
-      const postTitles = posts.map(post => post.title);
+      const postTitles = posts.map((post) => post.title);
       console.log('tRPC readSub returning:', postTitles.length, 'posts');
       return postTitles;
     } catch (error) {
