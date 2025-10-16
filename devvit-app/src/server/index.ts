@@ -2,7 +2,8 @@ import { createServer, getServerPort } from '@devvit/web/server';
 import express from 'express';
 
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { lifecycleRouter } from './lifecycleEvents';
+import { adminMenuRouter } from './lifecycle/adminMenu';
+import { lifecycleRouter } from './lifecycle/lifecycleEvents';
 import { createTRPCContext } from './trpc/context';
 import { appRouter, type AppRouter } from './trpc/router';
 
@@ -48,6 +49,7 @@ app.use(
 
 // Use lifecycle router for internal Devvit routes
 app.use(lifecycleRouter);
+app.use(adminMenuRouter);
 
 // Get port from environment variable with fallback
 const port = getServerPort();
