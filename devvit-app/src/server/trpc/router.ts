@@ -1,3 +1,4 @@
+import { appInstallPost } from '../core/post';
 import { publicProcedure, router } from './trpc';
 
 export const appRouter = router({
@@ -111,11 +112,36 @@ export const appRouter = router({
 
       const postTitles = posts.map((post) => post.title);
       console.log('tRPC readSub returning:', postTitles.length, 'posts');
+      console.log('tRPC readSub posts:', posts);
       return postTitles;
     } catch (error) {
       console.error('tRPC readSub error:', error);
       throw new Error('Failed to fetch posts from r/popular');
     }
+  }),
+
+  createAppInstallPost: publicProcedure.mutation(async () => {
+    console.log('tRPC createAppInstallPost called');
+    try {
+      const result = await appInstallPost();
+      console.log('tRPC createAppInstallPost returning:', result);
+      return result;
+    } catch (error) {
+      console.error('tRPC createAppInstallPost error:', error);
+      throw new Error('Failed to create app install post');
+    }
+  }),
+
+  getContext: publicProcedure.query(({ ctx }) => {
+    console.log('tRPC getContext called');
+    const contextData = {
+      postId: ctx.postId || null,
+      subredditName: ctx.subredditName || null,
+      appVersion: ctx.appVersion || null,
+      postData: ctx.postData || null,
+    };
+    console.log('tRPC getContext returning:', contextData);
+    return contextData;
   }),
 });
 

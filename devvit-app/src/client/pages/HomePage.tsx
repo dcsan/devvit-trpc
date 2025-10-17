@@ -4,9 +4,10 @@ import { useVersionInfo } from '../hooks/useVersionInfo';
 
 type HomePageProps = {
   onNavigateToAdmin: () => void;
+  onNavigateToImageTest: () => void;
 };
 
-export const HomePage = ({ onNavigateToAdmin }: HomePageProps) => {
+export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest }: HomePageProps) => {
   const { count, username, loading, increment, decrement } = useCounterTRPC();
   const { versionState, retry } = useVersionInfo();
 
@@ -20,16 +21,10 @@ export const HomePage = ({ onNavigateToAdmin }: HomePageProps) => {
         Admin Panel
       </button>
 
-      <img className="object-contain w-1/2 max-w-[250px] mx-auto" src="/snoo.png" alt="Snoo" />
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-2xl font-bold text-center text-gray-900 ">
-          {username ? `Hey ${username} 👋` : ''}
-        </h1>
-        <p className="text-base text-center text-gray-600 ">
-          Edit <span className="bg-[#e5ebee]  px-1 py-0.5 rounded">src/client/App.tsx</span>
-          to get started.
-        </p>
-      </div>
+      <h1 className="text-2xl font-bold text-center text-gray-900 ">
+        {username ? `Hey ${username} 👋` : ''}
+      </h1>
+
       <div className="flex items-center justify-center mt-5">
         <button
           className="flex items-center justify-center bg-[#d93900] text-white w-14 h-14 text-[2.5em] rounded-full cursor-pointer font-mono leading-none transition-colors"
@@ -49,6 +44,15 @@ export const HomePage = ({ onNavigateToAdmin }: HomePageProps) => {
           +
         </button>
       </div>
+
+      {/* Image Test Link */}
+      <button
+        onClick={onNavigateToImageTest}
+        className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+      >
+        Image Test Page
+      </button>
+
       <Footer versionState={versionState} onRetry={retry} />
     </div>
   );

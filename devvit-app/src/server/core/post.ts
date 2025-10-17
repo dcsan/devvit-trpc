@@ -1,4 +1,14 @@
-import { context, reddit } from '@devvit/web/server';
+import {
+  CommonSubmitPostOptions,
+  context,
+  Post,
+  reddit,
+  SubmitCustomPostOptions,
+  SubredditOptions,
+} from '@devvit/web/server';
+import { appIconData } from '../../shared/config/appIcon';
+
+type PostData = SubredditOptions & CommonSubmitPostOptions & SubmitCustomPostOptions;
 
 export const createPost = async () => {
   const { subredditName } = context;
@@ -24,4 +34,71 @@ export const createPost = async () => {
     subredditName: subredditName,
     title: 'symbolsociety',
   });
+};
+
+export const appInstallPost = async () => {
+  const { subredditName } = context;
+  if (!subredditName) {
+    throw new Error('subredditName is required');
+  }
+
+  const postData: PostData = {
+    title: 'Custom Post v' + context.appVersion,
+    // runAs: 'USER',
+    userGeneratedContent: {
+      text: 'Hello World',
+      imageUrls: [
+        'https://styles.redditmedia.com/t5_5wa5ww/styles/communityIcon_wyopomb2xb0a1.png',
+        // 'https://styles.redditmedia.com/t5_49fkib/styles/bannerBackgroundImage_5a4axis7cku61.png',
+      ],
+    },
+    // custom data to be stored in the post
+    postData: {
+      version: context.appVersion,
+      gameId: '1234567890',
+      gameName: 'symbolsociety',
+    },
+    subredditName,
+    textFallback: {
+      text: 'This is a Devvit post from version ' + context.appVersion,
+    },
+    splash: {
+      appDisplayName: 'symbolsociety',
+      // backgroundUri: 'default-splash.png',
+      backgroundUri: `data:image/png;base64,${appIconData}`,
+      buttonLabel: 'Start Playing',
+      description: 'Custom Post',
+      // entryUri: 'index.html',
+      heading: 'Welcome to the Game!',
+    },
+  };
+
+  const postResult: Post = await reddit.submitCustomPost(postData);
+
+  // const post = {
+  //   dir: 'dist/client',
+  //   entrypoints: {
+  //     default: {
+  //       entry: 'splash.html',
+  //     },
+  //   },
+  // };
+
+  // const result = await reddit.submitCustomPost({
+  //   postData: postData,
+  //   subredditName: subredditName,
+  //   title: 'symbolsociety v' + context.appVersion,
+  // });
+
+  console.log('appInstallPost', {
+    permalink: postResult.permalink,
+    id: postResult.id,
+    title: postResult.title,
+
+    url: postResult.url,
+
+    score: postResult.score,
+    comments: postResult.comments,
+  });
+  return postResult;
 };

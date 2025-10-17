@@ -1,0 +1,45 @@
+
+# Return fields from a custom post
+
+```ts
+createAppInstallPost returning: Post {
+   id: [Getter],
+   authorId: [Getter],
+   authorName: [Getter],
+   subredditId: [Getter],
+   subredditName: [Getter],
+   permalink: [Getter],
+   title: [Getter],
+   body: [Getter],
+   bodyHtml: [Getter],
+   url: [Getter],
+   thumbnail: [Getter],
+   createdAt: [Getter],
+   score: [Getter],
+   numberOfComments: [Getter],
+   numberOfReports: [Getter],
+   approved: [Getter],
+   approvedAtUtc: [Getter],
+   bannedAtUtc: [Getter],
+   spam: [Getter],
+   stickied: [Getter],
+   removed: [Getter],
+   removedBy: [Getter],
+   removedByCategory: [Getter],
+   archived: [Getter],
+   edited: [Getter],
+   locked: [Getter],
+   nsfw: [Getter],
+   quarantined: [Getter],
+   spoiler: [Getter],
+   hidden: [Getter],
+   ignoringReports: [Getter],
+   distinguishedBy: [Getter],
+   comments: [Getter],
+   flair: [Getter],
+   secureMedia: [Getter],
+   userReportReasons: [Getter],
+   modReportReasons: [Getter],
+   gallery: [Getter]
+ }
+```
