@@ -6,7 +6,7 @@ import {
   SubmitCustomPostOptions,
   SubredditOptions,
 } from '@devvit/web/server';
-import { appIconData } from '../../shared/config/appIcon';
+import { darkSplash } from '../../shared/config/appIcon';
 
 type PostData = SubredditOptions & CommonSubmitPostOptions & SubmitCustomPostOptions;
 
@@ -17,6 +17,15 @@ export const createPost = async () => {
   }
 
   return await reddit.submitCustomPost({
+    runAs: 'USER',
+    userGeneratedContent: {
+      text: 'Hello World',
+      // imageUrls: [
+      //   'https://styles.redditmedia.com/t5_5wa5ww/styles/communityIcon_wyopomb2xb0a1.png',
+      // 'https://styles.redditmedia.com/t5_49fkib/styles/bannerBackgroundImage_5a4axis7cku61.png',
+      // ],
+    },
+
     splash: {
       // Splash Screen Configuration
       appDisplayName: 'symbolsociety',
@@ -44,15 +53,6 @@ export const appInstallPost = async () => {
 
   const postData: PostData = {
     title: 'Custom Post v' + context.appVersion,
-    // runAs: 'USER',
-    userGeneratedContent: {
-      text: 'Hello World',
-      imageUrls: [
-        'https://styles.redditmedia.com/t5_5wa5ww/styles/communityIcon_wyopomb2xb0a1.png',
-        // 'https://styles.redditmedia.com/t5_49fkib/styles/bannerBackgroundImage_5a4axis7cku61.png',
-      ],
-    },
-    // custom data to be stored in the post
     postData: {
       version: context.appVersion,
       gameId: '1234567890',
@@ -64,11 +64,10 @@ export const appInstallPost = async () => {
     },
     splash: {
       appDisplayName: 'symbolsociety',
-      // backgroundUri: 'default-splash.png',
-      backgroundUri: `data:image/png;base64,${appIconData}`,
+      // backgroundUri: 'square-splash.png',
+      backgroundUri: `data:image/png;base64,${darkSplash}`,
       buttonLabel: 'Start Playing',
       description: 'Custom Post',
-      // entryUri: 'index.html',
       heading: 'Welcome to the Game!',
     },
   };

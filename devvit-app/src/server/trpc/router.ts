@@ -124,7 +124,7 @@ export const appRouter = router({
     console.log('tRPC createAppInstallPost called');
     try {
       const result = await appInstallPost();
-      console.log('tRPC createAppInstallPost returning:', result);
+      // console.log('tRPC createAppInstallPost returning:', result);
       return result;
     } catch (error) {
       console.error('tRPC createAppInstallPost error:', error);
