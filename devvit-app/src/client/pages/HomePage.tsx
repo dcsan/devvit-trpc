@@ -5,9 +5,10 @@ import { useVersionInfo } from '../hooks/useVersionInfo';
 type HomePageProps = {
   onNavigateToAdmin: () => void;
   onNavigateToImageTest: () => void;
+  onNavigateToPosts: () => void;
 };
 
-export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest }: HomePageProps) => {
+export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest, onNavigateToPosts }: HomePageProps) => {
   const { count, username, loading, increment, decrement } = useCounterTRPC();
   const { versionState, retry } = useVersionInfo();
 
@@ -45,13 +46,21 @@ export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest }: HomePageP
         </button>
       </div>
 
-      {/* Image Test Link */}
-      <button
-        onClick={onNavigateToImageTest}
-        className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
-      >
-        Image Test Page
-      </button>
+      {/* Navigation Links */}
+      <div className="flex gap-3 mt-4">
+        <button
+          onClick={onNavigateToPosts}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+        >
+          View Comments
+        </button>
+        <button
+          onClick={onNavigateToImageTest}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+        >
+          Image Test
+        </button>
+      </div>
 
       <Footer versionState={versionState} onRetry={retry} />
     </div>

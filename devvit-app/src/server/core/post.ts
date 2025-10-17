@@ -1,6 +1,7 @@
 import {
   CommonSubmitPostOptions,
   context,
+  media,
   Post,
   reddit,
   SubmitCustomPostOptions,
@@ -51,6 +52,16 @@ export const appInstallPost = async () => {
     throw new Error('subredditName is required');
   }
 
+  // ${body.toString('base64')}
+  const mediaType = 'png';
+  const contentType = `image/${mediaType}`;
+  const dataUrl = `data:${contentType};base64,${darkSplash}`;
+  const asset = await media.upload({
+    type: 'image',
+    url: dataUrl,
+  });
+  console.log('asset', asset);
+
   const postData: PostData = {
     title: 'Custom Post v' + context.appVersion,
     postData: {
@@ -65,7 +76,8 @@ export const appInstallPost = async () => {
     splash: {
       appDisplayName: 'symbolsociety',
       // backgroundUri: 'square-splash.png',
-      backgroundUri: `data:image/png;base64,${darkSplash}`,
+      // backgroundUri: `data:image/png;base64,${darkSplash}`,
+      backgroundUri: asset.mediaUrl,
       buttonLabel: 'Start Playing',
       description: 'Custom Post',
       heading: 'Welcome to the Game!',

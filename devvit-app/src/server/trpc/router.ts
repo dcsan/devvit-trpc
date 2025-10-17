@@ -1,5 +1,7 @@
 import { appInstallPost } from '../core/post';
+import { addComment } from '../core/comment';
 import { publicProcedure, router } from './trpc';
+import { z } from 'zod';
 
 export const appRouter = router({
   getInitialData: publicProcedure.query(async ({ ctx }) => {
@@ -142,6 +144,74 @@ export const appRouter = router({
     };
     console.log('tRPC getContext returning:', contextData);
     return contextData;
+  }),
+
+  postComment: publicProcedure
+    .input(
+      z.object({
+        text: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      console.log('tRPC postComment called with:', { text: input.text });
+      try {
+        const commentOptions: {
+          id: string;
+          text?: string;
+        } = {
+          id: ctx.postId!,
+        };
+        if (input.text) {
+          commentOptions.text = input.text;
+        }
+        const comment = await addComment(commentOptions);
+        console.log('tRPC postComment returning:', {
+          id: comment.id,
+          body: comment.body,
+        });
+        return {
+          id: comment.id,
+          body: comment.body,
+          permalink: comment.permalink,
+        };
+      } catch (error) {
+        console.error('tRPC postComment error:', error);
+        throw new Error('Failed to post comment');
+      }
+    }),
+
+  getPostComments: publicProcedure.query(async ({ ctx }) => {
+    console.log('tRPC getPostComments called');
+    try {
+      if (!ctx.postId) {
+        throw new Error('postId is required');
+      }
+
+      const post = await ctx.reddit.getPostById(ctx.postId as `t3_${string}`);
+      const comments = await post.comments.all();
+
+      const commentsWithVotes = comments.map((comment) => ({
+        id: comment.id,
+        body: comment.body,
+        author: comment.authorName,
+        score: comment.score,
+        createdAt: comment.createdAt.toISOString(),
+        permalink: comment.permalink,
+      }));
+
+      // Sort by score (upvotes) descending
+      const sortedComments = commentsWithVotes.sort((a, b) => b.score - a.score);
+
+      console.log('tRPC getPostComments returning:', {
+        count: sortedComments.length,
+        comments: sortedComments,
+      });
+
+      return sortedComments;
+    } catch (error) {
+      console.error('tRPC getPostComments error:', error);
+      throw new Error('Failed to fetch post comments');
+    }
   }),
 });
 
