@@ -6,9 +6,10 @@ type HomePageProps = {
   onNavigateToAdmin: () => void;
   onNavigateToImageTest: () => void;
   onNavigateToPosts: () => void;
+  onNavigateToPopular: () => void;
 };
 
-export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest, onNavigateToPosts }: HomePageProps) => {
+export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest, onNavigateToPosts, onNavigateToPopular }: HomePageProps) => {
   const { count, username, loading, increment, decrement } = useCounterTRPC();
   const { versionState, retry } = useVersionInfo();
 
@@ -47,12 +48,18 @@ export const HomePage = ({ onNavigateToAdmin, onNavigateToImageTest, onNavigateT
       </div>
 
       {/* Navigation Links */}
-      <div className="flex gap-3 mt-4">
+      <div className="flex flex-wrap gap-3 mt-4 justify-center">
         <button
           onClick={onNavigateToPosts}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
         >
           View Comments
+        </button>
+        <button
+          onClick={onNavigateToPopular}
+          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors"
+        >
+          r/popular
         </button>
         <button
           onClick={onNavigateToImageTest}

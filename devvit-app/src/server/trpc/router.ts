@@ -112,10 +112,27 @@ export const appRouter = router({
         })
         .all();
 
-      const postTitles = posts.map((post) => post.title);
-      console.log('tRPC readSub returning:', postTitles.length, 'posts');
-      console.log('tRPC readSub posts:', posts);
-      return postTitles;
+      const postsWithVotes = posts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        author: post.authorName,
+        score: post.score,
+        numComments: post.numberOfComments,
+        subreddit: post.subredditName,
+        createdAt: post.createdAt.toISOString(),
+        permalink: post.permalink,
+        url: post.url,
+      }));
+
+      // Sort by score (upvotes) descending
+      const sortedPosts = postsWithVotes.sort((a, b) => b.score - a.score);
+
+      console.log('tRPC readSub returning:', {
+        count: sortedPosts.length,
+        posts: sortedPosts,
+      });
+
+      return sortedPosts;
     } catch (error) {
       console.error('tRPC readSub error:', error);
       throw new Error('Failed to fetch posts from r/popular');
